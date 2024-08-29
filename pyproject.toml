@@ -2,9 +2,10 @@
 name = "face-recognition-tracking"
 version = "0.1.0"
 description = "Recognize the faces, assign the labels and track them"
-authors = ["Your Name <you@example.com>"]
+authors = ["Gaurav Neupane"]
 license = "MIT"
 readme = "README.md"
+packages = [{include = "face_recognition_tracking"}]
 
 [tool.poetry.dependencies]
 python = "^3.12"

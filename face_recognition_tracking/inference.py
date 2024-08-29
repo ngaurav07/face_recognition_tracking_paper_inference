@@ -1,7 +1,7 @@
 import cv2
 
-from embedding_extraction.extract import EmbeddingExtractor
-from utils import load_image_from_path
+from face_recognition_tracking.embedding_extraction.extract import EmbeddingExtractor
+from face_recognition_tracking.utils import load_image_from_path
 
 embedding = EmbeddingExtractor()
 
@@ -24,7 +24,7 @@ def webcam_inference():
 
         # show in the whole tracked image
         cv2.imshow("frame", frame)
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        if cv2.waitKey(1) & 0xFF == ord("q"):
             break
         if not ret:
             print("Cannot receive image. Exiting...")

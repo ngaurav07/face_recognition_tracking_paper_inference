@@ -3,7 +3,7 @@ from typing import Tuple
 import cv2
 import numpy as np
 
-from configurations import image_shape
+from face_recognition_tracking.configurations import embedding_model_image_shape
 
 
 def load_image_from_path(image_path: str) -> np.ndarray:
@@ -12,5 +12,5 @@ def load_image_from_path(image_path: str) -> np.ndarray:
     return image_rgb
 
 
-def resize_image(image: np.ndarray, size: Tuple[int, int] = image_shape) -> np.ndarray:
+def resize_image(image: np.ndarray, size: Tuple[int, int] = embedding_model_image_shape) -> np.ndarray:
     return cv2.resize(image, size)
