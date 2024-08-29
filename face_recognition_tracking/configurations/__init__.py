@@ -1,3 +1,3 @@
-from .config import embedding_model_image_shape
+from .config import EMBEDDING_MODEL_IMAGE_SHAPE
 
-__all__ = ["embedding_model_image_shape"]
+__all__ = ["EMBEDDING_MODEL_IMAGE_SHAPE"]

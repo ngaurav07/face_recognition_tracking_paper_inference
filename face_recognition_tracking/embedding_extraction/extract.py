@@ -3,7 +3,7 @@ from typing import Any
 import keras
 import numpy as np
 
-from face_recognition_tracking.configurations.config import embedding_model_image_shape
+from face_recognition_tracking.configurations.config import EMBEDDING_MODEL_IMAGE_SHAPE
 from face_recognition_tracking.utils import resize_image
 
 
@@ -46,7 +46,7 @@ class EmbeddingExtractor:
         :param image:  numpy ndarray image
         :return: pre-processed numpy ndarray image
         """
-        image = resize_image(image, embedding_model_image_shape)
+        image = resize_image(image, EMBEDDING_MODEL_IMAGE_SHAPE)
         image = np.expand_dims(image, axis=0)
         image = keras.applications.vgg16.preprocess_input(image)
         return image
