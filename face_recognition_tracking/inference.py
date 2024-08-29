@@ -4,13 +4,23 @@ from typing import Dict, Any
 
 import cv2
 
-from face_recognition_tracking.configurations.config import WHITELIST_IMAGE_EXTENSIONS
-from face_recognition_tracking.embedding_extraction.extract import EmbeddingExtractor
+from face_recognition_tracking.configurations import (
+    WHITELIST_IMAGE_EXTENSIONS,
+    FACE_FRAME,
+    BOUNDING_BOXES_FOR_FACES,
+)
+from face_recognition_tracking.embedding_extraction import EmbeddingExtractor
+from face_recognition_tracking.face_extraction import FaceDetectionFactory
 from face_recognition_tracking.search import VectorDatabase
-from face_recognition_tracking.utils import load_image_from_path
+from face_recognition_tracking.utils import ImageHelper
 
-embedding = EmbeddingExtractor()
-vectorDb = VectorDatabase()
+embedding = EmbeddingExtractor()  # used to create embedding from the detected face
+vectorDb = (
+    VectorDatabase()
+)  # used to save embedding and query similar embedding from the similar faces
+face_detector = (
+    FaceDetectionFactory.create_face_detector()
+)  # used for face detection from the frame
 
 
 def webcam_inference():
@@ -23,14 +33,23 @@ def webcam_inference():
 
     while True:
         ret, frame = cap.read()
-        # get the faces from the image
-
-        # search for the images
+        # get the faces as image from the frame
+        faces = face_detector.detect_faces(frame)
+        if len(faces) >= 1:
+            # extract the embedding of the images
+            images_embedding = []
+            # TODO make embedding extraction model take multiple images
+            for face in faces:
+                # extract the embedding of the image
+                face_embedding = embedding.extract(face[FACE_FRAME])
+                matched_person_name = vectorDb.match_face(face_embedding)
+                ImageHelper.put_text_draw_bounding_box(
+                    face[BOUNDING_BOXES_FOR_FACES], frame, matched_person_name
+                )
 
         # track the image
-
-        # show in the whole tracked image
         cv2.imshow("frame", frame)
+        # show in the whole tracked image
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
         if not ret:
@@ -49,7 +68,7 @@ def save_images_embedding(image_dir: str):
             image_path = os.path.join(root, file)
             extension = os.path.splitext(image_path)[1]
             if extension in WHITELIST_IMAGE_EXTENSIONS:  # only take images file
-                image = load_image_from_path(image_path)
+                image = ImageHelper.load_image_from_path(image_path)
                 image_embedding = embedding.extract(image)
                 folder_name = os.path.basename(root)
                 metadata: Dict[str, Any] = {
@@ -63,7 +82,7 @@ def save_images_embedding(image_dir: str):
 
 def image_inference(image_path: str):
     # load the image
-    image = load_image_from_path(image_path)
+    image = ImageHelper.load_image_from_path(image_path)
     image_embedding = embedding.extract(image)
 
     # save or extract image embedding

@@ -30,27 +30,40 @@ class VectorDatabase:
             name=VECTORDB_COLLECTION_NAME
         )
 
-    def match_face(self, faces: List[np.ndarray]) -> List[Any]:
+    def match_faces(self, faces_embedding: List[np.ndarray]) -> List[Any]:
         """
-        Extract the similar face from the previous one that is stored in the database.
+        Extract the similar face from the given embedding that is stored in the database.
         The index in the return list of the extracted face information is similar to the provided faces.
         Args:
-            faces: faces that appear in one frame
+            faces_embedding: faces that appear in one frame
 
         Returns: Matched faced persons name if any or None.
 
         """
         matched_faces = []
-        for face in faces:
-            matched_face = self._extract_matched_face(face)
-            if (
-                len(matched_face["distances"][0]) > 0
-                and matched_face["distances"][0][0] <= THRESHOLD_MATCHED_FACE
-            ):
-                matched_faces.append(matched_face["metadatas"][0][0]["person_name"])
-            else:
-                matched_faces.append(None)  # append None to save the input array length
+        for embedding in faces_embedding:
+            matched_faces.append(
+                self.match_face(embedding)
+            )  # appends face information if found otherwise append none to save the length of the array
         return matched_faces
+
+    def match_face(self, face_embedding: np.ndarray) -> str | None:
+        """
+        Extract the similar face from the given embedding that is stored in the database.
+        The index in the return list of the extracted face information is similar to the provided faces.
+        Args:
+            face_embedding: faces that appear in one frame
+
+        Returns: Matched faced person name if any or None.
+
+        """
+        matched_face = self._extract_matched_face(face_embedding)
+        if (
+            len(matched_face["distances"][0]) > 0
+            and matched_face["distances"][0][0] <= THRESHOLD_MATCHED_FACE
+        ):
+            return matched_face["metadatas"][0][0]["person_name"]
+        return None
 
     def save_embedding(
         self, embedding: np.ndarray, metadata: Dict[str, Any], id: UUID
