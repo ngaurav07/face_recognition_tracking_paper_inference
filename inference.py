@@ -1,6 +1,9 @@
 import cv2
 
+from embedding_extraction.extract import EmbeddingExtractor
 from utils import load_image_from_path
+
+embedding = EmbeddingExtractor()
 
 
 def webcam_inference():
@@ -30,10 +33,10 @@ def webcam_inference():
     cap.release()
     cv2.destroyAllWindows()
 
+
 def image_inference(image_path: str):
     # load the image
     image = load_image_from_path(image_path)
-    cv2.imshow("image", image)
+    image_embedding = embedding.extract(image)
 
-
-
+    # save or extract image embedding

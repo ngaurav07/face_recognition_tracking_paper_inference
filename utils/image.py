@@ -13,4 +13,4 @@ def load_image_from_path(image_path: str) -> np.ndarray:
 
 
 def resize_image(image: np.ndarray, size: Tuple[int, int] = image_shape) -> np.ndarray:
-    pass
+    return cv2.resize(image, size)
