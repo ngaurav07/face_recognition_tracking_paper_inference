@@ -1,4 +1,4 @@
-from typing import List, Dict, Tuple
+from typing import Tuple, TypedDict, List, Annotated
 
 import cv2
 import numpy as np
@@ -9,7 +9,12 @@ from face_recognition_tracking.configurations import (
 )
 from face_recognition_tracking.face_extraction.BaseDetector import BaseDetector
 
-Detected_faces_type = List[Dict[str, Tuple[int, int, int, int] | np.ndarray]]
+
+class DetectedFaces(TypedDict):
+    BOUNDING_BOXES_FOR_FACES: Annotated[
+        Tuple[int, int, int, int], "Coordinates for the bounding boxes (x,y,w,h)"
+    ]
+    FACE_FRAME: Annotated[np.ndarray, "Image frame containing the detected faces"]
 
 
 class HaarcascadesFaceDetector(BaseDetector):
@@ -18,7 +23,7 @@ class HaarcascadesFaceDetector(BaseDetector):
             cv2.data.haarcascades + "haarcascade_frontalface_default.xml"
         )
 
-    def detect_faces(self, frame) -> Detected_faces_type:
+    def detect_faces(self, frame) -> List[DetectedFaces]:
         """
         Detect faces from the frame using opencv
         Args:
@@ -33,7 +38,7 @@ class HaarcascadesFaceDetector(BaseDetector):
             frame, scaleFactor=1.1, minNeighbors=5, minSize=(40, 40)
         )
 
-        face_frames: Detected_faces_type = []
+        face_frames: List[DetectedFaces] | None = None
         for x, y, w, h in faces:
             # Extract the face using array slicing
             face_frame = frame[y : y + h, x : x + w]

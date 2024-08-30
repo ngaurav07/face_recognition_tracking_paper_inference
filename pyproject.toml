@@ -16,6 +16,9 @@ keras = "^3.5.0"
 chromadb = "^0.5.5"
 
 
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.11.2"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
