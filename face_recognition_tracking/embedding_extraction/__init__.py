@@ -1,3 +1,3 @@
-from .extract import EmbeddingExtractor
+from .EmbeddingExtractionfactory import EmbeddingFactory
 
-__all__ = ["EmbeddingExtractor"]
+__all__ = ["EmbeddingFactory"]

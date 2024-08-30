@@ -9,12 +9,14 @@ from face_recognition_tracking.configurations import (
     FACE_FRAME,
     BOUNDING_BOXES_FOR_FACES,
 )
-from face_recognition_tracking.embedding_extraction import EmbeddingExtractor
+from face_recognition_tracking.embedding_extraction import EmbeddingFactory
 from face_recognition_tracking.face_extraction import FaceDetectionFactory
 from face_recognition_tracking.search import VectorDatabase
 from face_recognition_tracking.utils import ImageHelper
 
-embedding = EmbeddingExtractor()  # used to create embedding from the detected face
+embedding = (
+    EmbeddingFactory.create_embedding_extractor()
+)  # used to create embedding from the detected face
 vectorDb = (
     VectorDatabase()
 )  # used to save embedding and query similar embedding from the similar faces
@@ -37,11 +39,10 @@ def webcam_inference():
         faces = face_detector.detect_faces(frame)
         if len(faces) >= 1:
             # extract the embedding of the images
-            images_embedding = []
             # TODO make embedding extraction model take multiple images
             for face in faces:
                 # extract the embedding of the image
-                face_embedding = embedding.extract(face[FACE_FRAME])
+                face_embedding = embedding.extract_embedding(face[FACE_FRAME])
                 matched_person_name = vectorDb.match_face(face_embedding)
                 ImageHelper.put_text_draw_bounding_box(
                     face[BOUNDING_BOXES_FOR_FACES], frame, matched_person_name
