@@ -2,6 +2,7 @@ from typing import List
 
 import keras
 import numpy as np
+from typing_extensions import ClassVar
 
 from face_recognition_tracking.configurations.config import EMBEDDING_MODEL_IMAGE_SHAPE
 from face_recognition_tracking.embedding_extraction.BaseExtractor import BaseExtractor
@@ -10,7 +11,7 @@ from face_recognition_tracking.utils import ImageHelper
 
 class VGGEmbeddingExtractor(BaseExtractor):
 
-    embedding_model = None
+    embedding_model: ClassVar = None
 
     def __init__(self):
         # Load the VGG16 model without the top classification layer
